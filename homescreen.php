@@ -7,8 +7,7 @@
  */
          
 	session_start(); 
-	//$currentUser="cooze";
-        $thisUser = LBaines;//$_SESSION['currentUser'];
+	$thisUser = $_SESSION['currentUser'];
 	
 ?>
 
@@ -26,7 +25,7 @@
 	<link rel="stylesheet" href="css/style.css">
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
 	<script>
 	
 	//Declare Variables
@@ -61,7 +60,7 @@
                          }
                  };
                  
-                 xmlhttp.open("GET","http://localhost/cmail/replyValidation.php?senderDATA=" + a + "&recipientDATA=" + b +"&subjectDATA=" + c + "&messageDATA=" + d,true);
+                 xmlhttp.open("GET","http://localhost/replyVali.php?senderDATA=" + a + "&recipientDATA=" + b +"&subjectDATA=" + c + "&messageDATA=" + d,true);
                  xmlhttp.send();
                  
         }                        
@@ -210,7 +209,7 @@
         
         /*END OUTPUT MESSAGES*/
         
-        
+        /*
         //Create AJAX Browser for Composing messages
         function goToCompose()
         {
@@ -230,18 +229,18 @@
                 {
                          if (composeBrowser.readyState==4 && composeBrowser.status==200)
                          {
-                                 document.body.innerHTML=composeBrowser.responseText;
+                                 document.getElementById(comphere).innerHTML=composeBrowser.responseText;
                          }
                  };
                  
-                 composeBrowser.open("GET",window.location.href="http://localhost/cmail/compose.php",true);
+                 composeBrowser.open("GET",window.location.href="http://localhost/createmsg.php",true);
                  composeBrowser.send();                
                 
-        }
-        document.getElementById('composeButton').onclick = function()
+        }*/
+        /*document.getElementById('composeButton').onclick = function()
         {
                 goToCompose();
-        };
+        };*/
         
         //Create AJAX Browser for Logout to messages
         function goToLogout()
@@ -274,7 +273,9 @@
         {
                 goToLogout();
         };
-        
+        function createMsg(){
+$("#comphere").load("createmsg.php #comphere");
+//return false;
         </script>
 </head>
 
@@ -292,13 +293,13 @@
 	
 	<div id = "comp">
 		<ul>
-			<li><a href="createmsg.php" id="composeButton">Compose</a></li>
+			<li><a href="createmsg.php" id="composeButton" onclick="return createMsg();">Compose</a></li>
 		</ul>
 	</div>
 	
 	<div id="homescreen">		
 		<div id="inbox">			
-			<span>Welcome, <?php echo /*$_SESSION["currentUser"];*/$thisUser ?></span>
+			<span>Welcome, <?php echo $_SESSION["currentUser"]; ?></span>
 		</div>
 		<div id="mainContent">
 		
@@ -405,10 +406,12 @@
 	</div>
 	</div>
 </div>
+
+<div id="comphere">
+</div>
+
 <script>
 	$(document).ready(function () {
     	$('#logo').addClass('animated fadeInDown');
 	});
 </script>
-
-
