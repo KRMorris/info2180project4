@@ -1,6 +1,20 @@
 <?php
 include ('connect.php');
 ?>
+<?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+         
+	session_start(); 
+	
+        $_SESSION['currentUser'] = $_POST['username'];
+	
+?>
+
 <html lang="en">
 
 <head>
@@ -62,7 +76,7 @@ include ('connect.php');
 			<div class="box-header">
 				<h2>Log In</h2>
 			</div>
-			<form name="signin" action="login.php" method="POST">
+			<form name="signin" action="loginUI.php" method="POST">
 			<label for="username">Username</label>
 			<br/>
 			<input type="text" id="username" name="username">
@@ -96,5 +110,86 @@ include ('connect.php');
 		$('label[for="password"]').removeClass('selected');
 	});
 </script>
+<?php
+
+$con = mysqli_connect("localhost","root","info2180","cheapo");
+session_start(); 
+
+	$password=$_REQUEST["password"];
+	$username=$_REQUEST["username"];
+$_SESSION['currentUser'] = $username;
+	if(mysqli_connect_errno()){
+		echo "Failed to connect to MySql: " . mysqli_connect_error();
+	}
+
+if($username == 'admin' && $password =='admin'){
+			
+		header("location: admin.php");
+		exit();
+	}
+else{
+
+	
+	
+	if($username != "" && $password != "")
+	{
+		$notEmpty = TRUE;
+	}
+	?>
+	
+	<?php
+			
+	$con = mysqli_connect("localhost","root","info2180","cheapo");
+	
+	// Verify connection to MySql
+	if(mysqli_connect_errno())
+	{
+		echo "Failed to connect to MySql: " . mysqli_connect_error();
+	}
+	
+	
+	
+	$resultUsers = mysqli_query($con, "SELECT * FROM User Where username = '$username'");
+	
+	$names = mysqli_fetch_array($resultUsers);
+	
+	if($names != "")
+	{
+		$userCheck = TRUE;	
+	}
+	
+	//get password exists check	
+	$resultPasswords = mysqli_query($con, "SELECT password FROM User Where username = '$username'");//this query returns an array		
+	
+	$userPassword = mysqli_fetch_array($resultPasswords);
+	
+	if($userPassword != "")
+	{
+		$passwordExistsCheck = TRUE;
+	}
+	
+	//verify if password corresponds with user
+	$resultUserForPassword = mysqli_query($con, "SELECT username FROM User Where password = '$password'");
+	
+	$userPassCheck = mysqli_fetch_array($resultUserForPassword);
+	
+	if($userPassCheck != "")
+	{
+		$userPasswordMatch = TRUE;
+	}
+	
+	if($userCheck && $passwordExistsCheck && $userPasswordMatch && $notEmpty)
+	{
+		echo "<br><p class='status' id='successful'>That entry successful. Everything matches</p>";
+		header("Location: homescreen.php");			
+	}
+	else
+	{
+		echo "<br><p class='status' id='error'>Error: Invalid Username or Password</p>";
+	}
+}
+
+
+?>
 
 </html>
